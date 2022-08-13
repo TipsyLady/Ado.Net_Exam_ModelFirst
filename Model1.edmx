@@ -1,0 +1,328 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Model1.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="Model1StoreContainer">
+    <EntitySet Name="VehicleSet" EntityType="Model1.Store.VehicleSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="DriversSet" EntityType="Model1.Store.DriversSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ClientsSet" EntityType="Model1.Store.ClientsSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="OrderSet" EntityType="Model1.Store.OrderSet" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="OrderClients" Association="Model1.Store.OrderClients">
+      <End Role="Order" EntitySet="OrderSet" />
+      <End Role="Clients" EntitySet="ClientsSet" />
+    </AssociationSet>
+    <AssociationSet Name="VehicleDrivers" Association="Model1.Store.VehicleDrivers">
+      <End Role="Vehicle" EntitySet="VehicleSet" />
+      <End Role="Drivers" EntitySet="DriversSet" />
+    </AssociationSet>
+    <AssociationSet Name="OrderDrivers" Association="Model1.Store.OrderDrivers">
+      <End Role="Order" EntitySet="OrderSet" />
+      <End Role="Drivers" EntitySet="DriversSet" />
+    </AssociationSet>
+    <AssociationSet Name="VehicleOrder" Association="Model1.Store.VehicleOrder">
+      <End Role="Order" EntitySet="OrderSet" />
+      <End Role="Vehicle" EntitySet="VehicleSet" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="VehicleSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Manufacturer" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Model" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Production_date" Type="datetime" Nullable="false" />
+    <Property Name="Number" Type="nvarchar" Nullable="false" MaxLength="10" />
+    <Property Name="Driver_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="DriversSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="First_Name" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Last_Name" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="DateOfBirth" Type="datetime" Nullable="false" />
+    <Property Name="Photo" Type="varbinary(max)" Nullable="true" />
+    <Property Name="Rate_index" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ClientsSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="First_Name" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="Last_Name" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="Telephone_number" Type="int" Nullable="false" />
+    <Property Name="Rate_index" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="OrderSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Address_from" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Address_to" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Order_time" Type="datetime" Nullable="false" />
+    <Property Name="Order_cost" Type="float" Nullable="false" />
+    <Property Name="Order_status" Type="nvarchar" Nullable="false" MaxLength="30" />
+    <Property Name="ClientsId" Type="int" Nullable="false" />
+    <Property Name="DriversId" Type="int" Nullable="true" />
+    <Property Name="VehicleId" Type="int" Nullable="true" />
+  </EntityType>
+  <Association Name="OrderClients">
+    <End Role="Order" Type="Model1.Store.OrderSet" Multiplicity="*" />
+    <End Role="Clients" Type="Model1.Store.ClientsSet" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Clients">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Order">
+        <PropertyRef Name="ClientsId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="VehicleDrivers">
+    <End Role="Vehicle" Type="Model1.Store.VehicleSet" Multiplicity="*" />
+    <End Role="Drivers" Type="Model1.Store.DriversSet" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Drivers">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Vehicle">
+        <PropertyRef Name="Driver_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="OrderDrivers">
+    <End Role="Order" Type="Model1.Store.OrderSet" Multiplicity="*" />
+    <End Role="Drivers" Type="Model1.Store.DriversSet" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Drivers">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Order">
+        <PropertyRef Name="DriversId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="VehicleOrder">
+    <End Role="Order" Type="Model1.Store.OrderSet" Multiplicity="*" />
+    <End Role="Vehicle" Type="Model1.Store.VehicleSet" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Vehicle">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Order">
+        <PropertyRef Name="VehicleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="Model1" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="Model1Container" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="VehicleSet" EntityType="Model1.Vehicle" />
+          <EntitySet Name="DriversSet" EntityType="Model1.Drivers" />
+          <EntitySet Name="ClientsSet" EntityType="Model1.Clients" />
+          <EntitySet Name="OrderSet" EntityType="Model1.Order" />
+          <AssociationSet Name="OrderClients" Association="Model1.OrderClients">
+            <End Role="Order" EntitySet="OrderSet" />
+            <End Role="Clients" EntitySet="ClientsSet" />
+          </AssociationSet>
+          <AssociationSet Name="VehicleDrivers" Association="Model1.VehicleDrivers">
+            <End Role="Vehicle" EntitySet="VehicleSet" />
+            <End Role="Drivers" EntitySet="DriversSet" />
+          </AssociationSet>
+          <AssociationSet Name="OrderDrivers" Association="Model1.OrderDrivers">
+            <End Role="Order" EntitySet="OrderSet" />
+            <End Role="Drivers" EntitySet="DriversSet" />
+          </AssociationSet>
+          <AssociationSet Name="VehicleOrder" Association="Model1.VehicleOrder">
+            <End Role="Order" EntitySet="OrderSet" />
+            <End Role="Vehicle" EntitySet="VehicleSet" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Vehicle">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Manufacturer" Type="String" Nullable="false" MaxLength="50" />
+          <Property Name="Model" Type="String" Nullable="false" MaxLength="50" />
+          <Property Name="Production_date" Type="DateTime" Nullable="false" />
+          <Property Name="Number" Type="String" Nullable="false" MaxLength="10" />
+          <NavigationProperty Name="Driver" Relationship="Model1.VehicleDrivers" FromRole="Vehicle" ToRole="Drivers" />
+          <NavigationProperty Name="Order" Relationship="Model1.VehicleOrder" FromRole="Vehicle" ToRole="Order" />
+        </EntityType>
+        <EntityType Name="Drivers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="First_Name" Type="String" Nullable="false" MaxLength="50" />
+          <Property Name="Last_Name" Type="String" Nullable="false" MaxLength="50" />
+          <Property Name="DateOfBirth" Type="DateTime" Nullable="false" />
+          <Property Name="Photo" Type="Binary" Nullable="true" />
+          <Property Name="Rate_index" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Vehicle" Relationship="Model1.VehicleDrivers" FromRole="Drivers" ToRole="Vehicle" />
+          <NavigationProperty Name="Order" Relationship="Model1.OrderDrivers" FromRole="Drivers" ToRole="Order" />
+        </EntityType>
+        <EntityType Name="Clients">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="First_Name" Type="String" Nullable="true" MaxLength="50" />
+          <Property Name="Last_Name" Type="String" Nullable="true" MaxLength="50" />
+          <Property Name="Telephone_number" Type="Int32" Nullable="false" />
+          <Property Name="Rate_index" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Order" Relationship="Model1.OrderClients" FromRole="Clients" ToRole="Order" />
+        </EntityType>
+        <EntityType Name="Order">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Address_from" Type="String" Nullable="false" MaxLength="Max" />
+          <Property Name="Address_to" Type="String" Nullable="false" MaxLength="Max" />
+          <Property Name="Order_time" Type="DateTime" Nullable="false" />
+          <Property Name="Order_cost" Type="Double" Nullable="false" />
+          <Property Name="Order_status" Type="String" Nullable="false" MaxLength="30" />
+          <NavigationProperty Name="Client" Relationship="Model1.OrderClients" FromRole="Order" ToRole="Clients" />
+          <Property Name="ClientsId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Driver" Relationship="Model1.OrderDrivers" FromRole="Order" ToRole="Drivers" />
+          <Property Name="DriversId" Type="Int32" Nullable="true" />
+          <NavigationProperty Name="Vehicle" Relationship="Model1.VehicleOrder" FromRole="Order" ToRole="Vehicle" />
+          <Property Name="VehicleId" Type="Int32" Nullable="true" />
+        </EntityType>
+        <Association Name="OrderClients">
+          <End Type="Model1.Order" Role="Order" Multiplicity="*" />
+          <End Type="Model1.Clients" Role="Clients" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Order">
+              <PropertyRef Name="ClientsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="VehicleDrivers">
+          <End Type="Model1.Vehicle" Role="Vehicle" Multiplicity="1" />
+          <End Type="Model1.Drivers" Role="Drivers" Multiplicity="1" />
+        </Association>
+        <Association Name="OrderDrivers">
+          <End Type="Model1.Order" Role="Order" Multiplicity="*" />
+          <End Type="Model1.Drivers" Role="Drivers" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Drivers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Order">
+              <PropertyRef Name="DriversId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="VehicleOrder">
+          <End Type="Model1.Order" Role="Order" Multiplicity="*" />
+          <End Type="Model1.Vehicle" Role="Vehicle" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Vehicle">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Order">
+              <PropertyRef Name="VehicleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="Model1StoreContainer" CdmEntityContainer="Model1Container">
+    <EntitySetMapping Name="VehicleSet">
+      <EntityTypeMapping TypeName="IsTypeOf(Model1.Vehicle)">
+        <MappingFragment StoreEntitySet="VehicleSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Manufacturer" ColumnName="Manufacturer" />
+          <ScalarProperty Name="Model" ColumnName="Model" />
+          <ScalarProperty Name="Production_date" ColumnName="Production_date" />
+          <ScalarProperty Name="Number" ColumnName="Number" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="DriversSet">
+      <EntityTypeMapping TypeName="IsTypeOf(Model1.Drivers)">
+        <MappingFragment StoreEntitySet="DriversSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="First_Name" ColumnName="First_Name" />
+          <ScalarProperty Name="Last_Name" ColumnName="Last_Name" />
+          <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
+          <ScalarProperty Name="Photo" ColumnName="Photo" />
+          <ScalarProperty Name="Rate_index" ColumnName="Rate_index" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ClientsSet">
+      <EntityTypeMapping TypeName="IsTypeOf(Model1.Clients)">
+        <MappingFragment StoreEntitySet="ClientsSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="First_Name" ColumnName="First_Name" />
+          <ScalarProperty Name="Last_Name" ColumnName="Last_Name" />
+          <ScalarProperty Name="Telephone_number" ColumnName="Telephone_number" />
+          <ScalarProperty Name="Rate_index" ColumnName="Rate_index" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="OrderSet">
+      <EntityTypeMapping TypeName="IsTypeOf(Model1.Order)">
+        <MappingFragment StoreEntitySet="OrderSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Address_from" ColumnName="Address_from" />
+          <ScalarProperty Name="Address_to" ColumnName="Address_to" />
+          <ScalarProperty Name="Order_time" ColumnName="Order_time" />
+          <ScalarProperty Name="Order_cost" ColumnName="Order_cost" />
+          <ScalarProperty Name="Order_status" ColumnName="Order_status" />
+          <ScalarProperty Name="ClientsId" ColumnName="ClientsId" />
+          <ScalarProperty Name="DriversId" ColumnName="DriversId" />
+          <ScalarProperty Name="VehicleId" ColumnName="VehicleId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="VehicleDrivers" TypeName="Model1.VehicleDrivers" StoreEntitySet="VehicleSet">
+      <EndProperty Name="Drivers">
+        <ScalarProperty Name="Id" ColumnName="Driver_Id" />
+      </EndProperty>
+      <EndProperty Name="Vehicle">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
